@@ -18,7 +18,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,4 +74,13 @@ public class ResourceService {
     }
 
 
+    public List<ResourceRecord> deleteByIds(int[] ids) {
+        Arrays.stream(ids)
+                .forEach(resourceRepository::deleteById);
+
+        return Arrays.stream(ids)
+                .mapToObj(i -> Long.parseLong(String.valueOf(i)))
+                .map(ResourceRecord::new)
+                .collect(Collectors.toList());
+    }
 }
