@@ -34,8 +34,10 @@ public class ResourceController {
     }
 
 
-    @GetMapping("/resources/{id}")
-    public Resource getResource(@PathVariable Integer id) {
+    @GetMapping("/{id}")
+    public Resource getResource(@PathVariable Long id) {
         return resourceService.getResource(id);
     }
+
+
 }

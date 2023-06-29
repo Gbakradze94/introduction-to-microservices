@@ -24,12 +24,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ResourceService {
 
-    public Resource getResource(Integer id) {
-        return null;
-    }
+    private final ResourceRepository resourceRepository;
+
 
     private final BodyContentHandler bodyContentHandler;
-    private final ResourceRepository resourceRepository;
 
     public ResourceRecord saveResource(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
         //detecting the file type
@@ -65,4 +63,11 @@ public class ResourceService {
                 .id(Long.valueOf(resource.getId()))
                 .build();
     }
+
+    public Resource getResource(Long id) {
+        return resourceRepository.findById(Math.toIntExact(id))
+                .orElseThrow(() -> new RuntimeException("Resource with this id could not be found"));
+    }
+
+
 }
