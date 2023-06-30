@@ -6,6 +6,7 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.mp3.LyricsHandler;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.springframework.util.ResourceUtils;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -18,7 +19,10 @@ public class Main {
         //detecting the file type
         BodyContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
-        FileInputStream inputstream = new FileInputStream(new File("test.mp3"));
+        final File songFile = ResourceUtils.getFile( "classpath:files/test.mp3");
+        System.out.println("SongFile: " + songFile);
+        FileInputStream inputstream = new FileInputStream(new File(songFile.toURI()));
+        System.out.println("TEST: " + new File(songFile.toURI()));
         ParseContext pcontext = new ParseContext();
 
         //Mp3 parser

@@ -1,6 +1,7 @@
 package org.resourceservice.api;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.exception.TikaException;
 import org.resourceservice.domain.Resource;
 import org.resourceservice.domain.ResourceRecord;
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/resources")
 @RequiredArgsConstructor
+@Slf4j
 public class ResourceController {
 
     private final ResourceService resourceService;
@@ -31,7 +33,7 @@ public class ResourceController {
     @PostMapping(consumes = {MediaType.ALL_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResourceRecord saveResource(@RequestParam("file") MultipartFile multipartFile) throws TikaException, IOException, SAXException {
+    public ResourceRecord saveResource(@RequestParam("multipartFile") MultipartFile multipartFile) throws TikaException, IOException, SAXException {
         return resourceService.saveResource(multipartFile);
     }
 

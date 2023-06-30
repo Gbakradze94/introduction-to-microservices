@@ -1,8 +1,11 @@
 package org.resourceservice.config;
 
+import org.apache.tika.metadata.Metadata;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.FileInputStream;
 
 @Configuration
 public class Mp3ParserConfig {
@@ -11,4 +14,8 @@ public class Mp3ParserConfig {
         return new BodyContentHandler();
     }
 
+    @Bean
+    public Metadata metadata() {
+        return new Metadata();
+    }
 }

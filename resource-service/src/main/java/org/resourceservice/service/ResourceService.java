@@ -1,6 +1,7 @@
 package org.resourceservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
@@ -24,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ResourceService {
@@ -32,13 +34,16 @@ public class ResourceService {
 
 
     private final BodyContentHandler bodyContentHandler;
+    private final Metadata metadata;
 
     public ResourceRecord saveResource(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
         //detecting the file type
         // BodyContentHandler handler = new BodyContentHandler();
-        Metadata metadata = new Metadata();
+        log.info("MULTIPART: " + multipartFile);
         File songFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        FileInputStream inputstream = new FileInputStream(songFile);
+        FileInputStream inputstream = new FileInputStream("C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\test\\resources\\files\\" + songFile.getPath());
+        log.info("SONGFILE: " + multipartFile);
+        log.info("PATH: " + songFile.getPath());
         ParseContext pcontext = new ParseContext();
 
         //Mp3 parser
