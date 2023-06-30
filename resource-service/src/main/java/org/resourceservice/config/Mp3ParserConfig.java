@@ -5,8 +5,6 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.FileInputStream;
-
 @Configuration
 public class Mp3ParserConfig {
     @Bean

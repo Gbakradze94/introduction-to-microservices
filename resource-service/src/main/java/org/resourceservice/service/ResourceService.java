@@ -14,7 +14,6 @@ import org.resourceservice.repository.ResourceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,18 +28,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResourceService {
 
+    public static final String BASE_PATH = "C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\test\\resources\\files\\";
     private final ResourceRepository resourceRepository;
-
-
     private final BodyContentHandler bodyContentHandler;
     private final Metadata metadata;
 
     public ResourceRecord saveResource(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
-        //detecting the file type
-        // BodyContentHandler handler = new BodyContentHandler();
-        log.info("MULTIPART: " + multipartFile);
         File songFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        FileInputStream inputstream = new FileInputStream("C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\test\\resources\\files\\" + songFile.getPath());
+        FileInputStream inputstream = new FileInputStream(BASE_PATH + songFile.getPath());
         log.info("SONGFILE: " + multipartFile);
         log.info("PATH: " + songFile.getPath());
         ParseContext pcontext = new ParseContext();
@@ -55,13 +49,6 @@ public class ResourceService {
             System.out.println(lyrics.toString());
         }
 
-        System.out.println("Contents of the document:" + bodyContentHandler.toString());
-        System.out.println("Metadata of the document:");
-        String[] metadataNames = metadata.names();
-
-        for (String name : metadataNames) {
-            System.out.println(name + ": " + metadata.get(name));
-        }
 
         Resource resource = Resource.builder()
                 .createdAt(LocalDateTime.now())
