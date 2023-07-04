@@ -2,6 +2,8 @@ package org.resourceservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
+import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
@@ -85,6 +87,9 @@ public class ResourceService {
         Mp3Parser.parse(inputstream, bodyContentHandler, metadata, pcontext);
         LyricsHandler lyrics = new LyricsHandler(inputstream, bodyContentHandler);
 
+        Tika tika = new Tika();
+        String type = tika.detect(songFile);
+        log.info("FILE TYPE: " + type);
         while (lyrics.hasLyrics()) {
             System.out.println(lyrics.toString());
         }
