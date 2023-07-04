@@ -25,15 +25,12 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.xml.sax.SAXException;
 import reactor.core.publisher.Mono;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -85,14 +82,6 @@ public class ResourceService {
 
         Mp3Parser Mp3Parser = new Mp3Parser();
         Mp3Parser.parse(inputstream, bodyContentHandler, metadata, pcontext);
-        LyricsHandler lyrics = new LyricsHandler(inputstream, bodyContentHandler);
-
-        Tika tika = new Tika();
-        String type = tika.detect(songFile);
-        log.info("FILE TYPE: " + type);
-        while (lyrics.hasLyrics()) {
-            System.out.println(lyrics.toString());
-        }
     }
 
     public List<ResourceRecord> deleteByIds(int[] ids) {

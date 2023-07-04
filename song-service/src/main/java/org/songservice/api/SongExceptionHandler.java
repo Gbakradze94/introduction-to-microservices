@@ -1,6 +1,5 @@
 package org.songservice.api;
 
-import org.apache.coyote.Response;
 import org.songservice.exception.SongNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

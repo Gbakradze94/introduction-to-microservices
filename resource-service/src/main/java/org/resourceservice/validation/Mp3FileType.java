@@ -2,7 +2,6 @@ package org.resourceservice.validation;
 
 import jakarta.validation.Constraint;
 
-import javax.ws.rs.ConstrainedTo;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
