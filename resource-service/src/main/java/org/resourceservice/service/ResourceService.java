@@ -8,12 +8,22 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.mp3.LyricsHandler;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.resourceservice.domain.Mp3Record;
 import org.resourceservice.domain.Resource;
 import org.resourceservice.domain.ResourceRecord;
+import org.resourceservice.domain.SongRecord;
+import org.resourceservice.repository.Mp3RecordRepository;
 import org.resourceservice.repository.ResourceRepository;
+import org.songservice.domain.SongRecordId;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.xml.sax.SAXException;
+import reactor.core.publisher.Mono;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,33 +41,33 @@ public class ResourceService {
 
     public static final String BASE_PATH = "C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\test\\resources\\files\\";
     private final ResourceRepository resourceRepository;
+    private final Mp3RecordRepository mp3RecordRepository;
     private final BodyContentHandler bodyContentHandler;
     private final Metadata metadata;
+    private final WebClient webClient;
 
     public ResourceRecord saveResource(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
-        File songFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        FileInputStream inputstream = new FileInputStream(BASE_PATH + songFile.getPath());
-        log.info("SONGFILE: " + multipartFile);
-        log.info("PATH: " + songFile.getPath());
-        ParseContext pcontext = new ParseContext();
 
-        //Mp3 parser
-        Mp3Parser Mp3Parser = new Mp3Parser();
-        Mp3Parser.parse(inputstream, bodyContentHandler, metadata, pcontext);
-        LyricsHandler lyrics = new LyricsHandler(inputstream, bodyContentHandler);
-
-        while (lyrics.hasLyrics()) {
-            System.out.println(lyrics.toString());
-        }
-
-
-        Resource resource = Resource.builder()
-                .createdAt(LocalDateTime.now())
+        saveSongMetaData(multipartFile);
+        Mp3Record record = Mp3Record.builder()
+                .data(multipartFile.getBytes())
                 .build();
+        SongRecord songRecord = SongRecord.builder()
+                .id(1L)
+                .name("Hello")
+                .artist("Beatles")
+                .build();
+        mp3RecordRepository.save(record);
 
-        resourceRepository.save(resource);
+        Mono<SongRecordId> songRecordId = webClient
+                .method(HttpMethod.POST)
+                .uri("http://localhost:8080/api/v1/songs")
+                .body(BodyInserters.fromValue(songRecord))
+                .exchangeToMono(response -> response.toEntity(SongRecordId.class))
+                .map(HttpEntity::getBody);
+
         return ResourceRecord.builder()
-                .id(Long.valueOf(resource.getId()))
+                .id(Mono.just(songRecordId.block().getId()).block())
                 .build();
     }
 
@@ -65,6 +76,19 @@ public class ResourceService {
                 .orElseThrow(() -> new RuntimeException("Resource with this id could not be found"));
     }
 
+    private void saveSongMetaData(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
+        File songFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        FileInputStream inputstream = new FileInputStream(BASE_PATH + songFile.getPath());
+        ParseContext pcontext = new ParseContext();
+
+        Mp3Parser Mp3Parser = new Mp3Parser();
+        Mp3Parser.parse(inputstream, bodyContentHandler, metadata, pcontext);
+        LyricsHandler lyrics = new LyricsHandler(inputstream, bodyContentHandler);
+
+        while (lyrics.hasLyrics()) {
+            System.out.println(lyrics.toString());
+        }
+    }
 
     public List<ResourceRecord> deleteByIds(int[] ids) {
         Arrays.stream(ids)
