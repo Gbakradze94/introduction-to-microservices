@@ -2,19 +2,15 @@ package org.resourceservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
-import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.mp3.LyricsHandler;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.resourceservice.domain.Mp3Record;
 import org.resourceservice.domain.Resource;
 import org.resourceservice.domain.ResourceRecord;
 import org.resourceservice.domain.SongRecord;
-import org.resourceservice.repository.Mp3RecordRepository;
+import org.resourceservice.repository.SongRecordRepository;
 import org.resourceservice.repository.ResourceRepository;
 import org.songservice.domain.SongRecordId;
 import org.springframework.http.HttpEntity;
@@ -25,12 +21,14 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.xml.sax.SAXException;
 import reactor.core.publisher.Mono;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -40,7 +38,7 @@ public class ResourceService {
 
     public static final String BASE_PATH = "C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\test\\resources\\files\\";
     private final ResourceRepository resourceRepository;
-    private final Mp3RecordRepository mp3RecordRepository;
+    private final SongRecordRepository songRecordRepository;
     private final BodyContentHandler bodyContentHandler;
     private final Metadata metadata;
     private final WebClient webClient;
@@ -48,16 +46,13 @@ public class ResourceService {
     public ResourceRecord saveResource(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
 
         saveSongMetaData(multipartFile);
-        Mp3Record record = Mp3Record.builder()
+        SongRecord songRecord = SongRecord.builder()
+                .id(new Random().nextLong())
                 .data(multipartFile.getBytes())
                 .build();
-        SongRecord songRecord = SongRecord.builder()
-                .id(1L)
-                .name("Hello")
-                .artist("Beatles")
-                .build();
-        mp3RecordRepository.save(record);
 
+        songRecordRepository.save(songRecord);
+        log.info("MP3 Record ID: " + songRecord.getId());
         Mono<SongRecordId> songRecordId = webClient
                 .method(HttpMethod.POST)
                 .uri("http://localhost:8080/api/v1/songs")
@@ -66,7 +61,7 @@ public class ResourceService {
                 .map(HttpEntity::getBody);
 
         return ResourceRecord.builder()
-                .id(Mono.just(songRecordId.block().getId()).block())
+                .id(songRecordId.block().getId())
                 .build();
     }
 
