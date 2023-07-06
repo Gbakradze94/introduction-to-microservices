@@ -13,11 +13,11 @@ import org.resourceservice.domain.SongRecord;
 import org.resourceservice.repository.SongRecordRepository;
 import org.resourceservice.repository.ResourceRepository;
 import org.songservice.domain.SongRecordId;
-import org.springframework.http.HttpEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.xml.sax.SAXException;
 import reactor.core.publisher.Mono;
@@ -35,7 +35,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResourceService {
 
-    public static final String BASE_PATH = "C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\test\\resources\\files\\";
+    public static final String BASE_MP3_FILE_PATH = "C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\test\\resources\\files\\";
+
+    @Value("${song-service.path}")
+    private String songServicePath;
     private final ResourceRepository resourceRepository;
     private final SongRecordRepository songRecordRepository;
     private final BodyContentHandler bodyContentHandler;
@@ -51,7 +54,7 @@ public class ResourceService {
         log.info("RESOURCEID: " + songRecord.getResourceId());
         Mono<SongRecordId> songRecordId = webClient
                 .method(HttpMethod.POST)
-                .uri("http://localhost:8080/api/v1/songs")
+                .uri(songServicePath)
                 .body(Mono.just(songRecord), SongRecord.class)
                 .retrieve()
                 .bodyToMono(SongRecordId.class);
@@ -68,7 +71,7 @@ public class ResourceService {
 
     private SongRecord extractSongRecordFromMetadata(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
         File songFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        FileInputStream inputstream = new FileInputStream(BASE_PATH + songFile.getPath());
+        FileInputStream inputstream = new FileInputStream(BASE_MP3_FILE_PATH + songFile.getPath());
         ParseContext pcontext = new ParseContext();
 
         Mp3Parser Mp3Parser = new Mp3Parser();
