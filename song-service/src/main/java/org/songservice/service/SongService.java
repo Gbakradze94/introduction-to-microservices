@@ -23,12 +23,12 @@ public class SongService {
 
     public SongRecordId save(SongRecord songRecord) {
         Song song = songRepository.save(songMapper.mapToEntity(songRecord));
-        log.info("ID: " + song.getId());
-        return new SongRecordId(song.getId());
+        log.info("ID: " + song.getResourceId());
+        return new SongRecordId(song.getResourceId());
     }
 
     public SongRecord getSongById(Long id) {
-        Song song = songRepository.findById(id)
+        Song song = songRepository.findById(Math.toIntExact(id))
                 .orElseThrow(() -> new SongNotFoundException("Song with " + id + "could not be found"));
         return songMapper.convert(song);
     }
@@ -36,11 +36,11 @@ public class SongService {
     public List<SongRecordId> deleteByIds(int[] ids) {
 
         Arrays.stream(ids)
-                .mapToObj(id -> songRepository.getReferenceById(Long.parseLong(String.valueOf(id))))
+                .mapToObj(id -> songRepository.getReferenceById(Integer.parseInt(String.valueOf(id))))
                 .forEach(songRepository::delete);
 
         return Arrays.stream(ids)
-                .mapToObj(id -> new SongRecordId(Long.parseLong(String.valueOf(id))))
+                .mapToObj(id -> new SongRecordId(Integer.parseInt(String.valueOf(id))))
         .collect(Collectors.toList());
     }
 }

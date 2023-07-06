@@ -20,9 +20,9 @@ import java.time.Year;
 public class Song {
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer resourceId;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String name;
 
     @Column(length = 20)
@@ -33,8 +33,6 @@ public class Song {
 
     @Column(length = 20)
     private String length;
-    @Column(nullable = false)
-    private Long resourceId;
 
     private Year year;
 }

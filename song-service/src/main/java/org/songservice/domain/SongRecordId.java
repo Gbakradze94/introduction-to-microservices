@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SongRecordId {
-    private Long id;
+    private Integer id;
 }

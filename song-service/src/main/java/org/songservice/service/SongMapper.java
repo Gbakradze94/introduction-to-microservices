@@ -18,8 +18,7 @@ public class SongMapper implements Converter<Song, SongRecord> {
 
     public Song mapToEntity(SongRecord songRecord) {
         return Song.builder()
-                .id(songRecord.getId())
-                .resourceId(songRecord.getId())
+                .resourceId(songRecord.getResourceId())
                 .name(songRecord.getName())
                 .artist(songRecord.getArtist())
                 .build();

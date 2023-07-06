@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SongRecord {
-    private Long id;
+    private Integer resourceId;
     private String name;
     private String artist;
 }

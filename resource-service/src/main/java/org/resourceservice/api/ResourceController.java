@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.exception.TikaException;
 import org.resourceservice.domain.Resource;
-import org.resourceservice.domain.ResourceRecord;
+import org.resourceservice.domain.ResourceResponse;
 import org.resourceservice.service.ResourceService;
 import org.resourceservice.validation.Mp3FileType;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class ResourceController {
     @PostMapping(consumes = {MediaType.ALL_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResourceRecord saveResource(@RequestParam("multipartFile") @Mp3FileType MultipartFile multipartFile) throws TikaException, IOException, SAXException {
+    public ResourceResponse saveResource(@RequestParam("multipartFile") @Mp3FileType MultipartFile multipartFile) throws TikaException, IOException, SAXException {
         return resourceService.saveResource(multipartFile);
     }
 
@@ -45,7 +45,7 @@ public class ResourceController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ResourceRecord> delete(@RequestParam("id") int[] ids) {
+    public List<ResourceResponse> delete(@RequestParam("id") int[] ids) {
         return resourceService.deleteByIds(ids);
     }
 }

@@ -8,7 +8,7 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.resourceservice.domain.Resource;
-import org.resourceservice.domain.ResourceRecord;
+import org.resourceservice.domain.ResourceResponse;
 import org.resourceservice.domain.SongRecord;
 import org.resourceservice.repository.SongRecordRepository;
 import org.resourceservice.repository.ResourceRepository;
@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,24 +42,21 @@ public class ResourceService {
     private final Metadata metadata;
     private final WebClient webClient;
 
-    public ResourceRecord saveResource(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
+    public ResourceResponse saveResource(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
 
-        saveSongMetaData(multipartFile);
-        SongRecord songRecord = SongRecord.builder()
-                .id(new Random().nextLong())
-                .data(multipartFile.getBytes())
-                .build();
+
+        SongRecord songRecord = extractSongRecordFromMetadata(multipartFile);
 
         songRecordRepository.save(songRecord);
-        log.info("MP3 Record ID: " + songRecord.getId());
+        log.info("RESOURCEID: " + songRecord.getResourceId());
         Mono<SongRecordId> songRecordId = webClient
                 .method(HttpMethod.POST)
                 .uri("http://localhost:8080/api/v1/songs")
-                .body(BodyInserters.fromValue(songRecord))
-                .exchangeToMono(response -> response.toEntity(SongRecordId.class))
-                .map(HttpEntity::getBody);
+                .body(Mono.just(songRecord), SongRecord.class)
+                .retrieve()
+                .bodyToMono(SongRecordId.class);
 
-        return ResourceRecord.builder()
+        return ResourceResponse.builder()
                 .id(songRecordId.block().getId())
                 .build();
     }
@@ -70,22 +66,30 @@ public class ResourceService {
                 .orElseThrow(() -> new RuntimeException("Resource with this id could not be found"));
     }
 
-    private void saveSongMetaData(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
+    private SongRecord extractSongRecordFromMetadata(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
         File songFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
         FileInputStream inputstream = new FileInputStream(BASE_PATH + songFile.getPath());
         ParseContext pcontext = new ParseContext();
 
         Mp3Parser Mp3Parser = new Mp3Parser();
         Mp3Parser.parse(inputstream, bodyContentHandler, metadata, pcontext);
+        return SongRecord.builder()
+                .name(metadata.get("dc:title"))
+                .artist(metadata.get("xmpDM:albumArtist"))
+                .album(metadata.get("xmpDM:album"))
+                .length(metadata.get("xmpDM:duration"))
+                .year(metadata.get("xmpDM:releaseDate"))
+                .data(multipartFile.getBytes())
+                .build();
     }
 
-    public List<ResourceRecord> deleteByIds(int[] ids) {
+    public List<ResourceResponse> deleteByIds(int[] ids) {
         Arrays.stream(ids)
                 .forEach(resourceRepository::deleteById);
 
         return Arrays.stream(ids)
-                .mapToObj(i -> Long.parseLong(String.valueOf(i)))
-                .map(ResourceRecord::new)
+                .mapToObj(i -> Integer.parseInt(String.valueOf(i)))
+                .map(ResourceResponse::new)
                 .collect(Collectors.toList());
     }
 }
