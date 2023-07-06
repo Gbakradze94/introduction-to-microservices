@@ -14,14 +14,12 @@ import org.resourceservice.repository.SongRecordRepository;
 import org.resourceservice.repository.ResourceRepository;
 import org.songservice.domain.SongRecordId;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.xml.sax.SAXException;
 import reactor.core.publisher.Mono;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
