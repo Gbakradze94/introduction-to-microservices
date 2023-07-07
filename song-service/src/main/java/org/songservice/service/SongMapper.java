@@ -11,9 +11,11 @@ public class SongMapper implements Converter<Song, SongRecord> {
     @Override
     public SongRecord convert(Song song) {
         return SongRecord.builder()
+                .songId(song.getSongId())
                 .name(song.getName())
                 .artist(song.getArtist())
                 .album(song.getAlbum())
+                .resourceId(song.getResourceId())
                 .year(song.getYear())
                 .length(song.getLength())
                 .build();
@@ -25,6 +27,7 @@ public class SongMapper implements Converter<Song, SongRecord> {
                 .name(songRecord.getName())
                 .artist(songRecord.getArtist())
                 .album(songRecord.getAlbum())
+                .resourceId(songRecord.getResourceId())
                 .year(songRecord.getYear())
                 .length(songRecord.getLength())
                 .build();
