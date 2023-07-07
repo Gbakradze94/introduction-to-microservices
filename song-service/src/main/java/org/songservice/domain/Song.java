@@ -34,5 +34,5 @@ public class Song {
     @Column(length = 20)
     private String length;
 
-    private Year year;
+    private String year;
 }

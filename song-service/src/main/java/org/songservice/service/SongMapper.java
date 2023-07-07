@@ -13,6 +13,9 @@ public class SongMapper implements Converter<Song, SongRecord> {
         return SongRecord.builder()
                 .name(song.getName())
                 .artist(song.getArtist())
+                .album(song.getAlbum())
+                .year(song.getYear())
+                .length(song.getLength())
                 .build();
     }
 
@@ -21,6 +24,9 @@ public class SongMapper implements Converter<Song, SongRecord> {
                 .resourceId(songRecord.getResourceId())
                 .name(songRecord.getName())
                 .artist(songRecord.getArtist())
+                .album(songRecord.getAlbum())
+                .year(songRecord.getYear())
+                .length(songRecord.getLength())
                 .build();
     }
 }

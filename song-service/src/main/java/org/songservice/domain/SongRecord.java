@@ -13,4 +13,7 @@ public class SongRecord {
     private Integer resourceId;
     private String name;
     private String artist;
+    private String album;
+    private String length;
+    private String year;
 }
