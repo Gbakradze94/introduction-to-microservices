@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -49,7 +50,7 @@ public class ResourceService {
         SongRecord songRecord = extractSongRecordFromMetadata(multipartFile);
 
         songRecordRepository.save(songRecord);
-        log.info("RESOURCEID: " + songRecord.getResourceId());
+        log.info("RESOURCEID: " + songRecord.getSongId());
         Mono<SongRecordId> songRecordId = webClient
                 .method(HttpMethod.POST)
                 .uri(songServicePath)
@@ -76,6 +77,7 @@ public class ResourceService {
         Mp3Parser.parse(inputstream, bodyContentHandler, metadata, pcontext);
         return SongRecord.builder()
                 .name(metadata.get("dc:title"))
+                .resourceId(new Random().nextInt())
                 .artist(metadata.get("xmpDM:albumArtist"))
                 .album(metadata.get("xmpDM:album"))
                 .length(metadata.get("xmpDM:duration"))

@@ -23,8 +23,8 @@ public class SongService {
 
     public SongRecordId save(SongRecord songRecord) {
         Song song = songRepository.save(songMapper.mapToEntity(songRecord));
-        log.info("ID: " + song.getResourceId());
-        return new SongRecordId(song.getResourceId());
+        log.info("ID: " + song.getSongId());
+        return new SongRecordId(song.getSongId());
     }
 
     public SongRecord getSongById(Long id) {

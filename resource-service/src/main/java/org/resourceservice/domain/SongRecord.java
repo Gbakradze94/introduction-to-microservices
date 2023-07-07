@@ -19,11 +19,12 @@ import lombok.NoArgsConstructor;
 public class SongRecord {
     @Id
     @GeneratedValue
-    private Integer resourceId;
+    private Integer songId;
     private String name;
     private String artist;
     private String album;
     private String length;
+    private Integer resourceId;
 
     private String year;
     @Lob

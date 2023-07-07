@@ -10,8 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Year;
-
 @Entity
 @Data
 @Builder
@@ -20,7 +18,7 @@ import java.time.Year;
 public class Song {
     @Id
     @GeneratedValue
-    private Integer resourceId;
+    private Integer songId;
 
     @Column
     private String name;
@@ -33,6 +31,8 @@ public class Song {
 
     @Column(length = 20)
     private String length;
+
+    private Integer resourceId;
 
     private String year;
 }
