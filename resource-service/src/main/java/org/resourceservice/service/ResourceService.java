@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.xml.sax.SAXException;
 import reactor.core.publisher.Mono;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResourceService {
 
-    public static final String BASE_MP3_FILE_PATH = "C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\test\\resources\\files\\";
+    public static final String BASE_MP3_FILE_PATH = "C:\\Users\\Giorgi_Bakradze\\IdeaProjects\\microservices-architecture-overview\\resource-service\\src\\main\\resources\\files\\";
 
     @Value("${song-service.path}")
     private String songServicePath;
@@ -72,7 +73,6 @@ public class ResourceService {
         File songFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
         FileInputStream inputstream = new FileInputStream(BASE_MP3_FILE_PATH + songFile.getPath());
         ParseContext pcontext = new ParseContext();
-
         Mp3Parser Mp3Parser = new Mp3Parser();
         Mp3Parser.parse(inputstream, bodyContentHandler, metadata, pcontext);
         return SongRecord.builder()
