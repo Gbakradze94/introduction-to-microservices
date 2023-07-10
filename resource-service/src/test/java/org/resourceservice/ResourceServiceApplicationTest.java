@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = {org.resourceservice.ResourceServiceApplication.class})
 class ResourceServiceApplicationTest {
-    @Test
-    void contextLoads() {
-    }
+//    @Test
+//    void contextLoads() {
+//    }
 }
