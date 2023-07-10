@@ -1,0 +1,12 @@
+version: '2'
+services:
+  resource-service:
+    container_name: resource-service
+    build:
+      context: docker-resource-service
+      dockerfile: Dockerfile
+    image: resource-server:latest
+    ports:
+      - 8081:8081
+    networks:
+      - spring-cloud-network
