@@ -1,11 +1,21 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.1.1'
+    id 'io.spring.dependency-management' version '1.1.0'
 }
 
-group 'org.example'
+group 'org'
 
 repositories {
     mavenCentral()
+}
+
+bootJar {
+    enabled = true
+}
+
+bootBuildImage{
+    imageName='microservice/' + rootProject.name+'-'+project.name
 }
 
 dependencies {
@@ -22,6 +32,9 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
     implementation 'org.apache.tika:tika-parsers:1.12'
 }
+
+
+
 
 test {
     useJUnitPlatform()
