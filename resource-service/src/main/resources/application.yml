@@ -2,6 +2,8 @@ server:
   port: 8081
 # datasource configuration
 spring:
+  application:
+    name: resource-service
   datasource:
     url: jdbc:postgresql://localhost:5432/resourceservice
     username: postgres
@@ -20,3 +22,7 @@ logging:
 
 song-service:
   path: /api/v1/songs
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka

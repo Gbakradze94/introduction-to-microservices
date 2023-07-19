@@ -1,0 +1,22 @@
+server:
+  port: 8085
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: resourceService
+          uri: lb://RESOURCE-SERVICE
+          predicates:
+            - Path=/resources/**
+        - id: songService
+          uri: lb://SONG-SERVICE
+          predicates:
+            - Path=/songs/**
