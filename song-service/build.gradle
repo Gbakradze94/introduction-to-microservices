@@ -19,9 +19,9 @@ bootBuildImage{
 }
 
 dependencyManagement {
-//    imports {
-//        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR2'
-//    }
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR2'
+    }
 }
 
 dependencies {
