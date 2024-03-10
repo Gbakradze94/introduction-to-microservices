@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-service-deployment
+  labels:
+    app: resource-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resource-service
+  template:
+    metadata:
+      name: resource-service-app
+      labels:
+        app: resource-service
+    spec:
+      containers:
+        - name: resource-service
+          image: gbakradze/resource-service:0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgresqldb-resourceservice/postgresqldb-resourceservice
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: resource-service
+spec:
+  type: ClusterIP
+  selector:
+    app: order-service
+  ports:
+    - port: 8082
+      targetPort: 8082

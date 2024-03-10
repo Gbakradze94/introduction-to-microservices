@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgresqldb-songservice
+  labels:
+    db: postgresqldb-songservice
+spec:
+  selector:
+    matchLabels:
+      db: postgresqldb-songservice
+  template:
+    metadata:
+      labels:
+        db: postgresqldb-songservice
+    spec:
+      containers:
+        - name: postgresqldb-songservice
+          image: postgres:13.1-alpine
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: root
+            - name: POSTGRES_DB
+              value: postgresqldb-songservice
+          resources:
+            requests:
+              cpu: 100m
+              memory: 60Mi
+            limits:
+              cpu: 200m
+              memory: 120Mi
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresqldb-songservice
+  labels:
+    db: postgresqldb-songservice
+spec:
+  type: ClusterIP
+  selector:
+    db: postgresqldb-songservice
+  ports:
+    - port: 5432
+      targetPort: 5432

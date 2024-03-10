@@ -33,6 +33,11 @@ public class SongController {
         return songService.save(songRecord);
     }
 
+    @GetMapping("/test")
+    public String getTest() {
+        return "Hello Friend";
+    }
+
     @GetMapping("/{id}")
     public SongRecord getSong(@PathVariable Long id) {
         return songService.getSongById(id);

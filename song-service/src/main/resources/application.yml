@@ -1,26 +1,11 @@
-#server:
-#  port: 8080
-## datasource configuration
-#spring:
-#  application:
-#    name: song-service
-#
-#song-service:
-#  path: /api/v1/songs
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: http://localhost:8083/eureka
-
 server:
   port: 8081
-# datasource configuration
 spring:
   application:
     name: song-service
-
+  # datasource configuration
   datasource:
-    url: jdbc:postgresql://postgresqldb_songservice:5432/songservice
+    url: jdbc:postgresql://postgresqldb-songservice:5432/songservice
     username: postgres
     password: root
     driverClassName: org.postgresql.Driver
@@ -29,9 +14,12 @@ spring:
     hibernate:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-song-service:
-  path: /api/v1/songs
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8083/eureka
+
+
+
+song-service:
+  path: /api/v1/songs

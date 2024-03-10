@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: song-service-deployment
+  labels:
+    app: song-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: song-service
+  template:
+    metadata:
+      name: song-service-app
+      labels:
+        app: song-service
+    spec:
+      containers:
+        - name: song-service
+          image: gbakradze/resource-service:0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgresqldb-songservice/postgresqldb-songservice
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: song-service
+  labels:
+    app: song-service
+spec:
+  type: ClusterIP
+  selector:
+    app: song-service
+  ports:
+    - port: 8081
+      targetPort: 8081

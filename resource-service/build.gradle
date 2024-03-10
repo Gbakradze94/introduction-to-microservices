@@ -22,7 +22,8 @@ bootJar {
 }
 
 bootBuildImage{
-    imageName='microservice/' + rootProject.name+'-'+project.name
+    imageName="gbakradze/${project.name}:${project.version}"
+    environment = ["BP_JVM_VERSION": "17.*"]
 }
 
 repositories {

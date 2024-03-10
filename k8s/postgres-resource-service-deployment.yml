@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgresqldb-resourceservice
+  labels:
+    db: postgresqldb-resourceservice
+spec:
+  selector:
+    matchLabels:
+      db: postgresqldb-resourceservice
+  template:
+    metadata:
+      labels:
+        db: postgresqldb-resourceservice
+    spec:
+      containers:
+        - name: postgresqldb-resourceservice
+          image: postgres:13.1-alpine
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: root
+            - name: POSTGRES_DB
+              value: postgresqldb-resourceservice
+          resources:
+            requests:
+              cpu: 100m
+              memory: 60Mi
+            limits:
+              cpu: 200m
+              memory: 120Mi
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresqldb-resourceservice
+  labels:
+    db: postgresqldb-resourceservice
+spec:
+  type: ClusterIP
+  selector:
+    db: postgresqldb-resourceservice
+  ports:
+    - port: 5432
+      targetPort: 5432
